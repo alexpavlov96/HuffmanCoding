@@ -4,8 +4,8 @@
 #include <iostream>
 #include <vector>
 
-#include "../decoder/Decoder.h"
-#include "../encoder/Encoder.h"
+#include "../decode/Decoder.h"
+#include "../encode/Encoder.h"
 #include "TimeMeasurer.h"
 #include "../common/common.h"
 

@@ -9,27 +9,24 @@
 
 #include <queue>
 
-#include "../decoder/Decoder.h"
-#include "../encoder/Encoder.h"
 #include "HuffmanTest.h"
 #include "TimeMeasurer.h"
-#include "../common/common.h"
 
 using namespace std;
 
 #include <chrono>
 #include <thread>
 
-int main()
+int main(int argc, char** argv)
 {
     {
         std::vector<std::string> inputFileNames = {
-            "input1.txt",
-            "input2.txt",
-            "input3.txt",
-            "input4.txt",
-            "input5.txt",
-            "input6.txt"
+            "D://work/testing/input1.txt",
+            "D://work/testing/input2.txt",
+            "D://work/testing/input3.txt",
+            "D://work/testing/input4.txt",
+            "D://work/testing/input5.txt",
+            "D://work/testing/input6.txt"
         };
 
         HuffmanTest test("TEST 1", inputFileNames, true);

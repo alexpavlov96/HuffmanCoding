@@ -10,6 +10,7 @@
 #include "DecoderHelper.h"
 #include "../common/common.h"
 #include "../common/helpers.h"
+#include "../common/HuffmanHeader.h"
 
 using namespace std;
 
@@ -26,9 +27,9 @@ void Decoder::fillCodes()
         for (size_t currentOffset = 0; currentOffset < bitsInByte; currentOffset++)
         {
             if ((code >> currentOffset) & 1)
-                currentCode.push_back('1');
+                currentCode += "1";
             else
-                currentCode.push_back('0');
+                currentCode += "0";
             if (++currentDigitOfCode >= codesSizes[currentIndex])
             {
                 _codes[_header.symbols[currentIndex]] = std::move(currentCode);
