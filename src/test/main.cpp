@@ -19,21 +19,22 @@ using namespace std;
 
 int main(int argc, char** argv)
 {
+	std::string folderName = "../../testing";
     {
         std::vector<std::string> inputFileNames = {
-            "D://work/testing/input1.txt",
-            "D://work/testing/input2.txt",
-            "D://work/testing/input3.txt",
-            "D://work/testing/input4.txt",
-            "D://work/testing/input5.txt",
-            "D://work/testing/input6.txt"
+            folderName + "/input1.txt",
+            folderName + "/input2.txt",
+            folderName + "/input3.txt",
+            folderName + "/input4.txt",
+            folderName + "/input5.txt",
+            folderName + "/input6.txt"
         };
 
         HuffmanTest test("TEST 1", inputFileNames, true);
     }
 
     {
-        std::vector<std::string> inputFileNames = { "D://work/testing/big.exe" };
+        std::vector<std::string> inputFileNames = { folderName + "/big.1" };
         HuffmanTest              test("TEST 2", inputFileNames, true);
     }
 

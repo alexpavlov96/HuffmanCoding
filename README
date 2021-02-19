@@ -1,0 +1,18 @@
+Implementation of Huffman compression algorithm
+Platforms: Linux, Windows
+
+Build:
+
+'make' produces 'encode' & 'decode' executables:
+
+	'encode' -- compresses any input file using Huffman algorithm:
+	$ encode <input-file> <output-file>	
+	
+	'decode' -- decompresses input file to the original one:
+	$ decode <input-file> <output-file>
+	
+'make test' produces 'test' executable:
+	'test'   -- runs equality tests on files mentioned in main.cpp
+				(default files are stored in a folder 'testing'):
+				encode 'input' 'encoded'; decode 'encoded' 'decoded; 
+				then compares 'input' with 'decoded'  

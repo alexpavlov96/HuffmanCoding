@@ -27,9 +27,9 @@ void Decoder::fillCodes()
         for (size_t currentOffset = 0; currentOffset < bitsInByte; currentOffset++)
         {
             if ((code >> currentOffset) & 1)
-                currentCode += "1";
+                currentCode.push_back('1');
             else
-                currentCode += "0";
+                currentCode.push_back('0');
             if (++currentDigitOfCode >= codesSizes[currentIndex])
             {
                 _codes[_header.symbols[currentIndex]] = std::move(currentCode);
