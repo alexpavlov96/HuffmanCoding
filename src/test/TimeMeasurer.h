@@ -1,3 +1,11 @@
+/*********************************************************
+ *
+ * TimeMeasurer
+ *
+ * Class, measuring time of execution during it's lifetime
+ *
+ *********************************************************/
+
 #pragma once
 
 #include <chrono>
@@ -15,6 +23,6 @@ public:
     ~TimeMeasurer();
 
 private:
-    time_stamp_t _beforeTime;
+    time_stamp_t _startTime;
     std::string  _name;
 };

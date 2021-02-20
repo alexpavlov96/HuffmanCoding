@@ -1,3 +1,11 @@
+/*********************************************************
+ *
+ * FrequencyNode
+ *
+ * Node, storing character and its frequency
+ *
+ *********************************************************/
+
 #pragma once
 
 #include <memory>

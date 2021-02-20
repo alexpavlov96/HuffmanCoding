@@ -1,20 +1,28 @@
+/*********************************************************
+ *
+ * HuffmanTest
+ *
+ * Simple test framework implementation for Huffman algorithm
+ *
+ *********************************************************/
+
 #include "HuffmanTest.h"
 
 #include <fstream>
 #include <iostream>
 #include <vector>
 
+#include "../common/common.h"
 #include "../decode/Decoder.h"
 #include "../encode/Encoder.h"
 #include "TimeMeasurer.h"
-#include "../common/common.h"
 
 using namespace std;
 
 HuffmanTest::HuffmanTest(const std::string& testName, std::vector<std::string>& inputFileNames, bool stopOnFirstFail)
     : _testName(testName)
 {
-    cout << "---- " << _testName << " ----" << endl;
+    cout << "---- " << _testName << " ----\n" << endl;
     for (const auto& inputFileName : inputFileNames)
     {
         if (!runTest(inputFileName) && stopOnFirstFail)
@@ -25,23 +33,15 @@ HuffmanTest::HuffmanTest(const std::string& testName, std::vector<std::string>& 
 HuffmanTest::~HuffmanTest()
 {
     if (_failedTests == 0)
-        cout << "---- " << _testName << " PASSED ----" << endl;
+        cout << "---- " << _testName << " PASSED ----\n" << endl;
     else
-        cout << "---- " << _testName << " FAILED: " << to_string(_failedTests) << " wrong ----" << endl;
+        cout << "---- " << _testName << " FAILED: " << to_string(_failedTests) << " wrong ----\n" << endl;
 }
 
 bool HuffmanTest::runTest(const std::string& inputFileName)
 {
     std::string encodedFileName = inputFileName + "_enc";
     std::string decodedFileName = inputFileName + "_dec";
-
-    std::fstream encodedFile;
-    encodedFile.open(encodedFileName, fstream::app);
-    encodedFile.close();
-
-    std::fstream decodedFile;
-    decodedFile.open(decodedFileName, fstream::app);
-    decodedFile.close();
 
     cout << "----- TEST CASE " << std::to_string(++_currentTest) << " -----" << endl;
     {
@@ -70,13 +70,13 @@ bool HuffmanTest::test(const std::string& inputFileName, const std::string& deco
 
     if (!file1.is_open() || !file2.is_open())
     {
-        cout << "----- FAIL: file not opened -----" << endl;
+        cout << "----- FAIL: file not opened -----\n" << endl;
         return false;
     }
 
     if (file1.tellg() != file2.tellg())
     {
-        cout << "----- FAIL: different sizes -----" << endl;
+        cout << "----- FAIL: different sizes -----\n" << endl;
         return false;
     }
 
@@ -96,12 +96,12 @@ bool HuffmanTest::test(const std::string& inputFileName, const std::string& deco
         {
             if (buffer1[i] != buffer2[i])
             {
-                cout << "----- FAIL: not equal -----" << endl;
+                cout << "----- FAIL: not equal -----\n" << endl;
                 return false;
             }
         }
     }
 
-    cout << "----- SUCCESS -----" << endl;
+    cout << "----- SUCCESS -----\n" << endl;
     return true;
 }

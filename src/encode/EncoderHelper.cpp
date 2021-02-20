@@ -1,10 +1,21 @@
+/*********************************************************
+ *
+ * EncoderHelper
+ *
+ * Class, helping with internal encoding proccess
+ *
+ *********************************************************/
+
 #include "EncoderHelper.h"
 
 #include <queue>
 
 using namespace std;
 
-EncoderHelper::codesMap_t EncoderHelper::fillCodes(const frequencyMap_t& frequencyMap)
+/*********************************************************
+ *  filling codes of symbols by given map of frequencies of symbols
+ */
+codesMap_t EncoderHelper::fillCodes(const frequencyMap_t& frequencyMap)
 {
     _codes.clear();
 
@@ -18,6 +29,10 @@ EncoderHelper::codesMap_t EncoderHelper::fillCodes(const frequencyMap_t& frequen
     return _codes;
 }
 
+/*********************************************************
+ *  - iterating the tree and accumulating current code (0 - left, 1 - right)
+ *  - assigning code value to the character stored in the leaf node
+ */
 void EncoderHelper::fillCodesRecursively(node_ptr root, const std::string& currentCode)
 {
     if (root->left())
@@ -31,17 +46,14 @@ void EncoderHelper::fillCodesRecursively(node_ptr root, const std::string& curre
     }
 }
 
-// Построение очереди с приоритетом
+/*********************************************************
+ *  - building the heap sorted by frequencies
+ */
 EncoderHelper::node_ptr EncoderHelper::buildNodesHeap(const frequencyMap_t& frequencyMap)
 {
-    vector<node_ptr> nodes;
-    nodes.reserve(frequencyMap.size());
-
+    nodesHeap_t nodesHeap;
     for (const auto& f : frequencyMap)
-        nodes.push_back(make_shared<FrequencyNode>(f.first, f.second));
-
-    using mv_iterator_t = std::move_iterator<decltype(nodes.begin())>;
-    nodesHeap_t nodesHeap(mv_iterator_t(nodes.begin()), mv_iterator_t(nodes.end()));
+        nodesHeap.push(make_shared<FrequencyNode>(f.first, f.second));
 
     while (nodesHeap.size() > 1)
     {

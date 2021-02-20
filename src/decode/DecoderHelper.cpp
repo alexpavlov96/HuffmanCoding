@@ -1,15 +1,29 @@
+/*********************************************************
+ *
+ * DecoderHelper
+ *
+ * Class, helping with internal decoding proccess
+ *
+ *********************************************************/
+
 #include "DecoderHelper.h"
 
 #include "../common/common.h"
 
 using namespace std;
 
+/*********************************************************
+ *  move left or right from current node
+ */
 void DecoderHelper::iterate(bool goLeft)
 {
     _currentNode = goLeft ? _currentNode->left : _currentNode->right;
 }
 
-void DecoderHelper::buildNode(std::shared_ptr<Node>& node, const std::pair<char, std::string>& code, size_t currentIndex) const
+/*********************************************************
+ *  building a node recursively by reading next bit of code
+ */
+void DecoderHelper::buildNode(std::shared_ptr<Node>& node, const codePair_t& code, size_t currentIndex) const
 {
     if (currentIndex >= code.second.size())
     {
@@ -31,7 +45,10 @@ void DecoderHelper::buildNode(std::shared_ptr<Node>& node, const std::pair<char,
     }
 }
 
-void DecoderHelper::buildTree(const std::unordered_map<char, std::string>& codes)
+/*********************************************************
+ *  building a tree from symbols codes
+ */
+void DecoderHelper::buildTree(const codesMap_t& codes)
 {
     _rootNode = std::make_shared<Node>();
 
@@ -43,7 +60,12 @@ void DecoderHelper::buildTree(const std::unordered_map<char, std::string>& codes
     _currentNode = _rootNode;
 }
 
-std::string DecoderHelper::getCodeFromNumber(unsigned char number, size_t maxSymbols)
+/*********************************************************
+ *  building a code
+ *
+ *  - building a string of bits from a 8-bit number, taking no more than maxSymbols bits
+ */
+std::string DecoderHelper::getCodeFromNumber(encodedData_t number, size_t maxSymbols)
 {
     string code;
     size_t symbolsToRead = min(maxSymbols, bitsInByte);

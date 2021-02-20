@@ -1,18 +1,25 @@
+/*********************************************************
+ *
+ * EncoderHelper
+ *
+ * Class, helping with internal encoding proccess
+ *
+ *********************************************************/
+
 #pragma once
 
 #include <unordered_map>
 
 #include <queue>
 
+#include "../common/common.h"
 #include "FrequencyNode.h"
 
 class EncoderHelper
 {
 public:
-    using frequencyMap_t = std::unordered_map<char, unsigned long long>;
-    using codesMap_t     = std::unordered_map<char, std::string>;
-    using node_ptr       = std::shared_ptr<FrequencyNode>;
-    using nodesHeap_t    = std::priority_queue<node_ptr, std::vector<node_ptr>, FrequencyNode::NodesComparator>;
+    using node_ptr    = std::shared_ptr<FrequencyNode>;
+    using nodesHeap_t = std::priority_queue<node_ptr, std::vector<node_ptr>, FrequencyNode::NodesComparator>;
 
     codesMap_t fillCodes(const frequencyMap_t& frequencyMap);
 

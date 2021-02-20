@@ -1,3 +1,11 @@
+/*********************************************************
+ *
+ * Encoder
+ *
+ * Class, encoding file using Huffman algorithm
+ *
+ *********************************************************/
+
 #include "Encoder.h"
 
 #include <algorithm>
@@ -13,17 +21,19 @@
 
 using namespace std;
 
-// Чтение символов из файла в _input
-// Заполнение частот _frequencies
+/*********************************************************
+ *  - reading data from file
+ *  - filling frequencies of each symbol
+ */
 void Encoder::readFromFile()
 {
     while (!_file.eof())
     {
         vector<char> buffer(bufferSize);
         readBytes(_file, buffer);
-        std::streamsize s = _file.gcount();
-        buffer.resize(s);
-        for (int i = 0; i < s; i++)
+        std::streamsize readSymbols = _file.gcount();
+        buffer.resize(readSymbols);
+        for (int i = 0; i < readSymbols; i++)
         {
             _frequencies[buffer[i]]++;
         }
@@ -31,19 +41,25 @@ void Encoder::readFromFile()
     }
 }
 
-void Encoder::fillCodesToWrite()
+/*********************************************************
+ *  filling the encoded array of data
+ *  - 8-bit number represents set of bits
+ *  - returns lenth of code in bits
+ */
+unsigned long long Encoder::fillEncodedData(std::vector<encodedData_t>& encodedData) const
 {
-    int           currentLength = 0;
-    unsigned char currentNum    = 0;
+    int                currentLength = 0;
+    encodedData_t      currentNum    = 0;
+    unsigned long long codeLength    = 0;
 
     for (const auto& buffer : _input)
     {
         for (const char& character : buffer)
         {
-            auto& currentCode = _codes[character];
+            auto& currentCode = _codes.at(character);
 
-            unsigned char currentCodeSize = currentCode.size();
-            _header.codeLength += currentCodeSize;
+            encodedData_t currentCodeSize = currentCode.size();
+            codeLength += currentCodeSize;
             for (const char& symbol : currentCode)
             {
                 if (symbol == '1')
@@ -52,8 +68,7 @@ void Encoder::fillCodesToWrite()
                 if (++currentLength == bitsInByte)
                 {
                     currentLength = 0;
-                    _encodedData.push_back(currentNum);
-                    //cout << "num pushed: " << (unsigned int)currentNum << endl;
+                    encodedData.push_back(currentNum);
                     currentNum = 0;
                 }
             }
@@ -62,27 +77,31 @@ void Encoder::fillCodesToWrite()
 
     if (currentLength != 0)
     {
-        _encodedData.push_back(currentNum);
+        encodedData.push_back(currentNum);
     }
+    return codeLength;
 }
 
-void Encoder::fillHeader()
+/*********************************************************
+ *  filling the header of Huffman code
+ */
+void Encoder::fillHeader(size_t numOfSymbols, HuffmanHeader& header) const
 {
     size_t        beginCodesNumber = 0;
-    unsigned char currentNumber    = 0;
+    encodedData_t currentNumber    = 0;
 
-    _header.nodesSize = ((_nodesSize == bitsInChar) ? 0 : _nodesSize);
+    header.symbolsNum = ((numOfSymbols == bitsInChar) ? 0 : numOfSymbols);
 
-    _header.symbols.reserve(_nodesSize);
-    _header.codesSizes.reserve(_nodesSize);
-    _header.codes.reserve(_nodesSize);
+    header.symbols.reserve(numOfSymbols);
+    header.codesSizes.reserve(numOfSymbols);
+    header.codes.reserve(numOfSymbols);
     for (const auto& freq : _frequencies)
     {
-        _header.symbols.push_back(freq.first);
+        header.symbols.push_back(freq.first);
 
-        const auto&         currentCode     = _codes[freq.first];
-        const unsigned char currentCodeSize = currentCode.size();
-        _header.codesSizes.push_back(currentCodeSize);
+        const auto&         currentCode     = _codes.at(freq.first);
+        const encodedData_t currentCodeSize = currentCode.size();
+        header.codesSizes.push_back(currentCodeSize);
 
         for (const char& symbol : currentCode)
         {
@@ -92,30 +111,31 @@ void Encoder::fillHeader()
             }
             if (++beginCodesNumber == bitsInByte)
             {
-                _header.codes.push_back(currentNumber);
+                header.codes.push_back(currentNumber);
                 beginCodesNumber = currentNumber = 0;
             }
         }
     }
     if (beginCodesNumber != 0)
     {
-        _header.codes.push_back(currentNumber);
+        header.codes.push_back(currentNumber);
     }
 }
 
+/*********************************************************
+ *  main encoding method
+ *
+ *  - opens files
+ *  - reads symbols and fills frequencies
+ *  - fills codes of symbols
+ *  - writes codes to output
+ */
 void Encoder::encode(const std::string& inputFileName, const std::string& encodedFileName)
 {
     _file.open(inputFileName, ios::binary);
-
-    if (!_file.is_open())
-    {
-        cout << "encode: error (file not opened)\n";
-        return;
-    }
-
     _output.open(encodedFileName, ios::binary);
 
-    if (!_output.is_open())
+    if (!_file.is_open() || !_output.is_open())
     {
         cout << "encode: error (file not opened)\n";
         return;
@@ -123,12 +143,12 @@ void Encoder::encode(const std::string& inputFileName, const std::string& encode
 
     readFromFile();
 
-    _nodesSize = _frequencies.size();
+    auto differentSymbolsNum = _frequencies.size();
 
-    if (_nodesSize == 0)
+    if (differentSymbolsNum == 0)
         return;
 
-    if (_nodesSize > bitsInChar)
+    if (differentSymbolsNum > bitsInChar)
     {
         cout << "ERROR: too much symbols\n";
         return;
@@ -136,8 +156,9 @@ void Encoder::encode(const std::string& inputFileName, const std::string& encode
 
     _codes = _helper.fillCodes(_frequencies);
 
-    fillHeader();
-    fillCodesToWrite();
+    fillHeader(differentSymbolsNum, _header);
+    std::vector<encodedData_t> encodedData;
+    _header.codeLength = fillEncodedData(encodedData);
     _output << _header;
-    writeBytes(_output, _encodedData);
+    writeBytes(_output, encodedData);
 }

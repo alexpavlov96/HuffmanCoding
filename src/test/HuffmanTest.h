@@ -1,3 +1,11 @@
+/*********************************************************
+ *
+ * HuffmanTest
+ *
+ * Simple test framework implementation for Huffman algorithm
+ *
+ *********************************************************/
+
 #pragma once
 
 #include <string>

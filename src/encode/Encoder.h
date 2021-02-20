@@ -1,3 +1,11 @@
+/*********************************************************
+ *
+ * Encoder
+ *
+ * Class, encoding file using Huffman algorithm
+ *
+ *********************************************************/
+
 #pragma once
 
 #include <fstream>
@@ -6,9 +14,10 @@
 #include <unordered_map>
 #include <vector>
 
+#include "../common/HuffmanHeader.h"
+#include "../common/common.h"
 #include "EncoderHelper.h"
 #include "FrequencyNode.h"
-#include "../common/HuffmanHeader.h"
 
 class Encoder
 {
@@ -22,14 +31,11 @@ private:
     HuffmanHeader _header;
     EncoderHelper _helper;
 
-    std::unordered_map<char, std::string>        _codes;
-    std::vector<std::vector<char>>               _input;
-    std::unordered_map<char, unsigned long long> _frequencies;
-    size_t                                       _nodesSize = 0;
+    codesMap_t                     _codes;
+    std::vector<std::vector<char>> _input;
+    frequencyMap_t                 _frequencies; // frequencies by symbols
 
-    std::vector<unsigned char> _encodedData;
-
-    void readFromFile();
-    void fillHeader();
-    void fillCodesToWrite();
+    void               readFromFile();
+    void               fillHeader(size_t numOfSymbols, HuffmanHeader& header) const;
+    unsigned long long fillEncodedData(std::vector<encodedData_t>& encodedData) const;
 };

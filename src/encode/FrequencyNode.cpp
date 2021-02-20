@@ -1,3 +1,11 @@
+/*********************************************************
+ *
+ * FrequencyNode
+ *
+ * Node, storing character and its frequency
+ *
+ *********************************************************/
+
 #include "FrequencyNode.h"
 
 FrequencyNode::FrequencyNode()

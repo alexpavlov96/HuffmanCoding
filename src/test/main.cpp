@@ -17,25 +17,21 @@ using namespace std;
 #include <chrono>
 #include <thread>
 
-int main(int argc, char** argv)
+int main()
 {
-	std::string folderName = "../../testing";
+    std::string folderName = "./testing/";
+    
     {
         std::vector<std::string> inputFileNames = {
-            folderName + "/input1.txt",
-            folderName + "/input2.txt",
-            folderName + "/input3.txt",
-            folderName + "/input4.txt",
-            folderName + "/input5.txt",
-            folderName + "/input6.txt"
+            folderName + "input1",
+            folderName + "input2",
+            folderName + "input3",
+            folderName + "input4",
+            folderName + "input5",
+            folderName + "input6"
         };
 
         HuffmanTest test("TEST 1", inputFileNames, true);
-    }
-
-    {
-        std::vector<std::string> inputFileNames = { folderName + "/big.1" };
-        HuffmanTest              test("TEST 2", inputFileNames, true);
     }
 
     return 0;
