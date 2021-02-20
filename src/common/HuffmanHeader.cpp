@@ -30,15 +30,19 @@ std::ifstream& operator>>(std::ifstream& file, HuffmanHeader& header)
 
     size_t totalBeginCodesSize = std::accumulate(codesSizes.begin(), codesSizes.end(), 0);
 
-    if (totalBeginCodesSize == 0)
+    if (totalBeginCodesSize == 0 || totalBeginCodesSize > codesSizes.size() * bitsInChar)
     {
-        return file;
+        throw std::logic_error("wrong number of codes size");
     }
 
     codes.resize((totalBeginCodesSize - 1) / bitsInByte + 1);
     readBytes(file, codes);
 
     readBytes(file, header.codeLength);
+    if (header.codeLength == 0)
+    {
+        throw std::logic_error("wrong size of code");
+    }
     return file;
 }
 

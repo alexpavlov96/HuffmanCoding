@@ -67,3 +67,10 @@ $(BUILD_DIR)/HuffmanTest.o: $(TEST_SRC)/HuffmanTest.cpp
 	
 $(BUILD_DIR)/TimeMeasurer.o: $(TEST_SRC)/TimeMeasurer.cpp
 	g++ -c $(TEST_SRC)/TimeMeasurer.cpp -o $(BUILD_DIR)/TimeMeasurer.o
+	
+clean:
+ifeq ($(OS),Windows_NT)
+	cd $(BUILD_DIR) && del *.o *.a
+else
+	cd $(BUILD_DIR) && rm *.o *.a
+endif

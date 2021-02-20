@@ -19,8 +19,8 @@ using namespace std;
 
 int main()
 {
-    std::string folderName = "./testing/";
-    
+    std::string folderName = "testing/";
+
     {
         std::vector<std::string> inputFileNames = {
             folderName + "input1",

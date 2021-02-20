@@ -22,7 +22,7 @@
 class Encoder
 {
 public:
-    void encode(const std::string& inputFileName, const std::string& encodedFileName);
+    bool encode(const std::string& inputFileName, const std::string& encodedFileName);
 
 private:
     std::ifstream _file;

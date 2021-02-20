@@ -130,15 +130,15 @@ void Encoder::fillHeader(size_t numOfSymbols, HuffmanHeader& header) const
  *  - fills codes of symbols
  *  - writes codes to output
  */
-void Encoder::encode(const std::string& inputFileName, const std::string& encodedFileName)
+bool Encoder::encode(const std::string& inputFileName, const std::string& encodedFileName)
 {
     _file.open(inputFileName, ios::binary);
     _output.open(encodedFileName, ios::binary);
 
     if (!_file.is_open() || !_output.is_open())
     {
-        cout << "encode: error (file not opened)\n";
-        return;
+        cerr << "ERROR: file not opened\n";
+        return false;
     }
 
     readFromFile();
@@ -146,12 +146,12 @@ void Encoder::encode(const std::string& inputFileName, const std::string& encode
     auto differentSymbolsNum = _frequencies.size();
 
     if (differentSymbolsNum == 0)
-        return;
+        return true;
 
     if (differentSymbolsNum > bitsInChar)
     {
-        cout << "ERROR: too much symbols\n";
-        return;
+        cerr << "ERROR: unexpected\n";
+        return false;
     }
 
     _codes = _helper.fillCodes(_frequencies);
@@ -161,4 +161,5 @@ void Encoder::encode(const std::string& inputFileName, const std::string& encode
     _header.codeLength = fillEncodedData(encodedData);
     _output << _header;
     writeBytes(_output, encodedData);
+    return true;
 }

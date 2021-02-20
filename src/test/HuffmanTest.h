@@ -19,10 +19,11 @@ public:
 
 private:
     std::string _testName;
-    size_t      _failedTests = 0;
-    size_t      _currentTest = 0;
+    size_t      _failedTests     = 0;
+    size_t      _currentTest     = 0;
+    bool        _stopOnFirstFail = false;
 
-    bool runTest(const std::string& inputFileName);
+    bool runTest(const std::string& inputFileName, size_t testNum) const;
 
-    bool test(const std::string& inputFileName, const std::string& decodedFileName);
+    bool testEqualFiles(const std::string& inputFileName, const std::string& decodedFileName) const;
 };

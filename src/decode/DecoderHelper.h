@@ -28,7 +28,7 @@ public:
 
     void buildTree(const codesMap_t& codes); // building a tree from symbols codes
     void iterate(bool goLeft);               // move left or right from current node
-    bool currentIsLeaf() const { return !_currentNode->left && !_currentNode->right; }
+    bool currentIsLeaf() const;
     void setCurrentToRoot() { _currentNode = _rootNode; }
     char currentCharacter() const { return _currentNode->character; }
 

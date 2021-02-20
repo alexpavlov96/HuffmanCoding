@@ -20,7 +20,7 @@
 class Decoder
 {
 public:
-    void decode(const std::string& encodedFileName, const std::string& decodedFileName);
+    bool decode(const std::string& encodedFileName, const std::string& decodedFileName);
 
 private:
     std::ifstream _input;   // input file descriptor

@@ -81,3 +81,15 @@ std::string DecoderHelper::getCodeFromNumber(encodedData_t number, size_t maxSym
     }
     return code;
 }
+
+/*********************************************************
+ *  - checks is current node is a leaf
+ *  - throws an exception if called while current node is nullptr
+ */
+bool DecoderHelper::currentIsLeaf() const
+{
+    if (!_currentNode)
+        throw std::logic_error("unexpected nullptr current leaf");
+
+    return !_currentNode->left && !_currentNode->right;
+}

@@ -125,24 +125,33 @@ void Decoder::translate()
  *  - reads header
  *  - fills codes of symbols
  */
-void Decoder::decode(const std::string& encodedFileName, const std::string& decodedFileName)
+bool Decoder::decode(const std::string& encodedFileName, const std::string& decodedFileName)
 {
     _input.open(encodedFileName, ios::binary);
     _decoded.open(decodedFileName, ios::binary);
 
     if (!_input.is_open() || !_decoded.is_open())
     {
-        cout << "decode: error (file not opened)\n";
-        return;
+        cerr << "ERROR: file not opened\n";
+        return false;
     }
 
     // file is empty
     if (_input.peek() == std::ifstream::traits_type::eof())
     {
-        return;
+        return true;
     }
 
-    _input >> _header;
-    _helper.buildTree(codesBySymbols());
-    translate();
+    try
+    {
+        _input >> _header;
+        _helper.buildTree(codesBySymbols());
+        translate();
+    }
+    catch (std::exception& e)
+    {
+        cerr << "ERROR: wrong file format\n";
+        return false;
+    }
+    return true;
 }

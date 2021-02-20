@@ -21,62 +21,82 @@ using namespace std;
 
 HuffmanTest::HuffmanTest(const std::string& testName, std::vector<std::string>& inputFileNames, bool stopOnFirstFail)
     : _testName(testName)
+    , _stopOnFirstFail(stopOnFirstFail)
 {
-    cout << "---- " << _testName << " ----\n" << endl;
+    cout << "---- " << _testName << " ----" << endl;
     for (const auto& inputFileName : inputFileNames)
     {
-        if (!runTest(inputFileName) && stopOnFirstFail)
-            break;
+        if (!runTest(inputFileName, ++_currentTest))
+        {
+            _failedTests++;
+            if (_stopOnFirstFail)
+                break;
+        }
     }
 }
 
 HuffmanTest::~HuffmanTest()
 {
     if (_failedTests == 0)
-        cout << "---- " << _testName << " PASSED ----\n" << endl;
+        cout << "---- " << _testName << " PASSED ----\n"
+             << endl;
     else
-        cout << "---- " << _testName << " FAILED: " << to_string(_failedTests) << " wrong ----\n" << endl;
+    {
+        cerr << "---- " << _testName << " FAILED";
+        if (!_stopOnFirstFail)
+        {
+            cerr << ": " << to_string(_failedTests) << "/" << to_string(_currentTest) << " wrong ----";
+        }
+        cerr << "\n"
+             << endl;
+    }
 }
 
-bool HuffmanTest::runTest(const std::string& inputFileName)
+bool HuffmanTest::runTest(const std::string& inputFileName, size_t testNum) const
 {
     std::string encodedFileName = inputFileName + "_enc";
     std::string decodedFileName = inputFileName + "_dec";
 
-    cout << "----- TEST CASE " << std::to_string(++_currentTest) << " -----" << endl;
+    cout << "----- TEST CASE " << std::to_string(testNum) << " -----" << endl;
     {
         MEASURE("Encoder");
         Encoder encoder;
-        encoder.encode(inputFileName, encodedFileName);
+        if (!encoder.encode(inputFileName, encodedFileName))
+        {
+            cerr << "Encoder failed" << endl;
+            return false;
+        }
     }
 
     {
         MEASURE("Decoder");
         Decoder decoder;
-        decoder.decode(encodedFileName, decodedFileName);
+        if (!decoder.decode(encodedFileName, decodedFileName))
+        {
+            cerr << "Decoder failed" << endl;
+            return false;
+        }
     }
-    if (!test(inputFileName, decodedFileName))
-    {
-        _failedTests++;
-        return false;
-    }
-    return true;
+
+    return testEqualFiles(inputFileName, decodedFileName);
 }
 
-bool HuffmanTest::test(const std::string& inputFileName, const std::string& decodedFileName)
+bool HuffmanTest::testEqualFiles(const std::string& inputFileName, const std::string& decodedFileName) const
 {
     ifstream file1(inputFileName, ios::binary | std::ifstream::ate);
     ifstream file2(decodedFileName, ios::binary | std::ifstream::ate);
 
     if (!file1.is_open() || !file2.is_open())
     {
-        cout << "----- FAIL: file not opened -----\n" << endl;
+        cerr << "----- FAIL: file not opened -----\n"
+             << endl;
         return false;
     }
 
     if (file1.tellg() != file2.tellg())
     {
-        cout << "----- FAIL: different sizes -----\n" << endl;
+        cerr << "----- FAIL: different sizes -----\n"
+             << endl;
         return false;
     }
 
@@ -96,12 +116,14 @@ bool HuffmanTest::test(const std::string& inputFileName, const std::string& deco
         {
             if (buffer1[i] != buffer2[i])
             {
-                cout << "----- FAIL: not equal -----\n" << endl;
+                cerr << "----- FAIL: not equal -----\n"
+                     << endl;
                 return false;
             }
         }
     }
 
-    cout << "----- SUCCESS -----\n" << endl;
+    cout << "----- SUCCESS -----\n"
+         << endl;
     return true;
 }
